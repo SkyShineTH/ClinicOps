@@ -11,7 +11,7 @@ export function LineButton({
   return (
     <a
       href={href}
-      className={`group marketing-pressable inline-flex items-center justify-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-ink shadow-sm hover:border-teal/40 hover:bg-sky-soft/60 ${className}`}
+      className={`group marketing-pressable inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white/78 px-5 py-2.5 text-sm font-semibold text-ink shadow-sm backdrop-blur-md hover:border-teal/40 hover:bg-sky-soft/70 ${className}`}
     >
       <MessageCircle
         className="size-4 text-teal transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:group-hover:scale-100"

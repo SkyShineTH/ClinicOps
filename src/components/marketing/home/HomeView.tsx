@@ -29,87 +29,83 @@ export async function HomeView() {
   const t = await getTranslations("Home");
   const tCommon = await getTranslations("Common");
   const heroAlt = locale === "en" && heroPhoto.altEn ? heroPhoto.altEn : heroPhoto.altTh;
+  const heroSignals =
+    locale === "en"
+      ? ["Digital scan planning", "Sterile workflow", "Demo booking"]
+      : ["วางแผนด้วยสแกนดิจิทัล", "เวิร์กโฟลว์สะอาดปลอดภัย", "จองนัดโหมดสาธิต"];
+  const heroInterfaceLabel =
+    locale === "en" ? "Digital treatment planning cockpit" : "ระบบวางแผนรอยยิ้มดิจิทัล";
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-b from-sky-soft/80 via-canvas to-canvas">
-        <div className="mx-auto max-w-6xl px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:grid lg:grid-cols-12 lg:gap-10 lg:pt-20">
-          <div className="lg:col-span-6">
-            <p className="text-sm font-medium text-teal">{t("hero.eyebrow")}</p>
-            <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-[2.5rem]">
+      <section className="relative min-h-[76svh] overflow-hidden bg-ink text-white">
+        <Image
+          src={heroPhoto.src}
+          alt={heroAlt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(6,31,29,0.82)_0%,rgba(6,31,29,0.54)_38%,rgba(6,31,29,0.12)_70%,rgba(6,31,29,0.22)_100%)]" />
+        <div className="clinical-frame absolute inset-x-4 bottom-4 top-4 rounded-[1.5rem] border border-white/16 sm:inset-x-6 sm:rounded-[2rem]" />
+        <div className="absolute left-1/2 top-6 hidden w-[min(46rem,72vw)] -translate-x-1/2 rounded-full border border-white/18 bg-white/8 px-5 py-2 text-center text-xs font-medium text-white/82 backdrop-blur-md lg:block">
+          {heroInterfaceLabel}
+        </div>
+        <div className="relative z-[2] mx-auto flex min-h-[76svh] max-w-6xl flex-col justify-end px-4 pb-14 pt-24 sm:px-6 sm:pb-16 lg:pb-20">
+          <div className="max-w-3xl clinical-reveal">
+            <p className="inline-flex rounded-full border border-white/18 bg-white/12 px-3 py-1 text-xs font-semibold uppercase text-sky-soft backdrop-blur-md">
+              {t("hero.eyebrow")}
+            </p>
+            <h1 className="mt-5 max-w-2xl text-4xl font-semibold leading-tight text-white sm:text-6xl lg:text-[4.75rem]">
               {t("hero.title")}
             </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-muted">{t("hero.body")}</p>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/82 sm:text-lg">{t("hero.body")}</p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/booking"
-                className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-teal-hover"
+                className="marketing-pressable clinical-cta inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white"
               >
                 {tCommon("bookOnline")}
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <LineButton label={tCommon("lineChat")} />
             </div>
-            <ul className="mt-10 flex flex-wrap gap-6 text-sm text-ink-muted">
-              <li className="flex items-center gap-2">
+            <ul className="mt-10 grid max-w-2xl gap-3 text-sm text-white/82 sm:grid-cols-2">
+              <li className="clinical-chip flex items-center gap-2 rounded-full px-3 py-2 text-ink">
                 <ShieldCheck className="size-4 shrink-0 text-teal" aria-hidden />
-                {t("hero.bulletSterilization")}
+                <span>{t("hero.bulletSterilization")}</span>
               </li>
-              <li className="flex items-center gap-2">
+              <li className="clinical-chip flex items-center gap-2 rounded-full px-3 py-2 text-ink">
                 <Cpu className="size-4 shrink-0 text-teal" aria-hidden />
-                {t("hero.bulletDigital")}
+                <span>{t("hero.bulletDigital")}</span>
               </li>
             </ul>
           </div>
-          <div className="relative mt-12 lg:col-span-6 lg:mt-0">
-            <figure className="overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
-              <div className="relative aspect-[4/3] w-full bg-line">
-                <Image
-                  src={heroPhoto.src}
-                  alt={heroAlt}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover object-center"
-                />
+          <div className="mt-10 grid gap-2 text-xs text-white/75 sm:grid-cols-3 lg:max-w-3xl">
+            {heroSignals.map((signal) => (
+              <div key={signal} className="rounded-2xl border border-white/16 bg-white/10 px-4 py-3 backdrop-blur-md">
+                {signal}
               </div>
-              <figcaption className="break-words border-t border-line bg-sky-soft/40 px-4 py-3 text-xs leading-relaxed text-ink-muted sm:px-5">
-                <span className="font-medium text-ink">{t("hero.photoCredit")}</span>
-                {" · "}
-                <a
-                  href={heroPhoto.photoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-teal underline decoration-teal/30 underline-offset-2 hover:decoration-teal"
-                >
-                  {heroPhoto.title}
-                </a>
-                {" · "}
-                {t("hero.photoBy")}{" "}
-                <a
-                  href={heroPhoto.photographerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-teal underline decoration-teal/30 underline-offset-2 hover:decoration-teal"
-                >
-                  {heroPhoto.photographer}
-                </a>{" "}
-                {t("hero.onUnsplash")}{" "}
-                <a
-                  href={heroPhoto.licenseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-teal underline decoration-teal/30 underline-offset-2 hover:decoration-teal"
-                >
-                  Unsplash
-                </a>
-                <span className="mt-1 block text-ink-faint">{t("hero.photoDisclaimer")}</span>
-              </figcaption>
-            </figure>
+            ))}
           </div>
         </div>
-        <SmileArcDivider />
+        <figcaption className="absolute bottom-2 right-4 z-[3] max-w-[18rem] text-right text-[10px] leading-snug text-white/66 sm:right-6">
+          <span>{t("hero.photoCredit")} </span>
+          <a href={heroPhoto.photoUrl} target="_blank" rel="noopener noreferrer" className="underline">
+            {heroPhoto.title}
+          </a>
+          <span> · {t("hero.photoBy")} </span>
+          <a href={heroPhoto.photographerUrl} target="_blank" rel="noopener noreferrer" className="underline">
+            {heroPhoto.photographer}
+          </a>
+          <span> · </span>
+          <a href={heroPhoto.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline">
+            Unsplash License
+          </a>
+        </figcaption>
       </section>
+      <SmileArcDivider />
 
       <HomeServices />
       <HomeTech />
@@ -124,20 +120,24 @@ export async function HomeView() {
 }
 
 async function HomeServices() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Treatment matrix" : "แผนบริการดิจิทัล";
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6" id="services">
+    <section className="clinical-reveal mx-auto max-w-6xl px-4 py-18 sm:px-6 sm:py-20" id="services">
       <div className="max-w-2xl">
-        <h2 className="text-2xl font-semibold text-ink">{t("services.title")}</h2>
+        <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+        <h2 className="mt-3 text-3xl font-semibold text-ink">{t("services.title")}</h2>
         <p className="mt-2 text-ink-muted">{t("services.subtitle")}</p>
       </div>
       <div className="mt-10 grid gap-6 lg:grid-cols-12">
-        <div className="group overflow-hidden rounded-2xl border border-line bg-surface shadow-sm transition hover:border-teal/30 lg:col-span-7">
+        <div className="clinical-card group overflow-hidden rounded-[1.5rem] transition hover:-translate-y-1 hover:border-teal/40 lg:col-span-7">
           <Link href="/services#implants" className="block">
             <StockFigure
               meta={homeServicePhotos.implants}
               aspectClassName="aspect-[16/10]"
-              frameClassName="rounded-none border-0 bg-line"
+              frameClassName="clinical-frame rounded-none border-0 bg-line"
+              imageClassName="transition duration-700 ease-out group-hover:scale-[1.03]"
               sizes="(max-width: 1024px) 100vw, 60vw"
               showCredit={false}
             />
@@ -167,12 +167,13 @@ async function HomeServices() {
           </p>
         </div>
         <div className="flex flex-col gap-6 lg:col-span-5">
-          <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-sky-soft/40 transition hover:bg-sky-soft/70">
+          <div className="clinical-panel group flex flex-1 flex-col overflow-hidden rounded-[1.5rem] transition hover:-translate-y-1">
             <Link href="/services#veneers" className="flex flex-1 flex-col">
               <StockFigure
                 meta={homeServicePhotos.veneers}
                 aspectClassName="aspect-[16/9]"
-                frameClassName="rounded-none border-0 bg-line"
+                frameClassName="clinical-frame rounded-none border-0 bg-line"
+                imageClassName="transition duration-700 ease-out group-hover:scale-[1.03]"
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 showCredit={false}
               />
@@ -195,12 +196,13 @@ async function HomeServices() {
               </a>
             </p>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-dashed border-line bg-surface transition hover:border-teal/40">
+          <div className="clinical-card group overflow-hidden rounded-[1.5rem] transition hover:-translate-y-1 hover:border-teal/40">
             <Link href="/services#ortho" className="block">
               <StockFigure
                 meta={homeServicePhotos.ortho}
                 aspectClassName="aspect-[16/9]"
-                frameClassName="rounded-none border-0 bg-line"
+                frameClassName="clinical-frame rounded-none border-0 bg-line"
+                imageClassName="transition duration-700 ease-out group-hover:scale-[1.03]"
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 showCredit={false}
               />
@@ -227,27 +229,32 @@ async function HomeServices() {
 }
 
 async function HomeTech() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Digital studio" : "สตูดิโอดิจิทัล";
   const items = [
     { icon: Camera, titleKey: "scanTitle" as const, bodyKey: "scanBody" as const, photo: techPhotos[0]! },
     { icon: Cpu, titleKey: "cadTitle" as const, bodyKey: "cadBody" as const, photo: techPhotos[1]! },
     { icon: Sparkles, titleKey: "dsdTitle" as const, bodyKey: "dsdBody" as const, photo: techPhotos[2]! },
   ];
   return (
-    <section className="border-y border-line bg-surface py-16">
+    <section className="border-y border-line bg-surface/82 py-18 backdrop-blur-xl sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-2xl font-semibold text-ink">{t("tech.title")}</h2>
+        <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+        <h2 className="mt-3 text-3xl font-semibold text-ink">{t("tech.title")}</h2>
         <p className="mt-2 max-w-2xl text-ink-muted">{t("tech.subtitle")}</p>
-        <div className="mt-10 grid gap-8 sm:grid-cols-3">
+        <div className="mt-10 grid gap-5 sm:grid-cols-3">
           {items.map((item) => (
-            <div key={item.titleKey} className="rounded-2xl border border-line bg-canvas p-6">
+            <div key={item.titleKey} className="clinical-card group rounded-[1.5rem] p-4 transition hover:-translate-y-1 sm:p-5">
               <StockFigure
                 meta={item.photo}
                 aspectClassName="aspect-[16/10]"
+                frameClassName="clinical-frame rounded-[1.1rem] border-0 bg-line"
+                imageClassName="transition duration-700 ease-out group-hover:scale-[1.04]"
                 sizes="(max-width: 640px) 100vw, 33vw"
                 showCredit={false}
               />
-              <item.icon className="mt-4 size-8 text-teal" aria-hidden />
+              <item.icon className="mt-5 size-8 text-teal" aria-hidden />
               <h3 className="mt-4 font-semibold text-ink">{t(`tech.${item.titleKey}`)}</h3>
               <p className="mt-2 text-sm text-ink-muted">{t(`tech.${item.bodyKey}`)}</p>
               <p className="mt-2 text-[10px] text-ink-faint">
@@ -274,18 +281,21 @@ async function HomeTech() {
 }
 
 async function HomeTeam() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Care team" : "ทีมดูแล";
   const doctors = [
     { nameKey: "d1name" as const, roleKey: "d1role" as const },
     { nameKey: "d2name" as const, roleKey: "d2role" as const },
     { nameKey: "d3name" as const, roleKey: "d3role" as const },
   ];
   return (
-    <section className="w-full py-16">
+    <section className="w-full py-18 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-ink">{t("team.title")}</h2>
+            <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+            <h2 className="mt-3 text-3xl font-semibold text-ink">{t("team.title")}</h2>
             <p className="mt-2 text-ink-muted">{t("team.subtitle")}</p>
           </div>
           <Link href="/team" className="text-sm font-semibold text-teal hover:underline">
@@ -294,7 +304,7 @@ async function HomeTeam() {
         </div>
       </div>
       <div className="mx-auto mt-10 max-w-6xl px-4 sm:px-6">
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-teal/35 focus-within:border-teal/35">
+        <div className="clinical-card overflow-hidden rounded-[1.5rem] transition hover:-translate-y-1 hover:border-teal/35 focus-within:border-teal/35">
           <Link
             href="/team"
             className="group block text-inherit no-underline outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
@@ -303,7 +313,8 @@ async function HomeTeam() {
             <StockFigure
               meta={teamGroupPhoto}
               aspectClassName="aspect-[16/9] lg:aspect-[2/1]"
-              frameClassName="rounded-none border-0 bg-line"
+              frameClassName="clinical-frame rounded-none border-0 bg-line"
+              imageClassName="transition duration-700 ease-out group-hover:scale-[1.02]"
               sizes="(max-width: 1024px) 100vw, 1152px"
               showCredit={false}
             />
@@ -333,19 +344,23 @@ async function HomeTeam() {
 }
 
 async function HomeGallery() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Smile archive" : "แกลเลอรี่รอยยิ้ม";
   return (
-    <section className="bg-sky-soft/30 py-16">
+    <section className="bg-sky-soft/35 py-18 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-2xl font-semibold text-ink">{t("gallery.title")}</h2>
+        <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+        <h2 className="mt-3 text-3xl font-semibold text-ink">{t("gallery.title")}</h2>
         <p className="mt-2 max-w-3xl text-sm text-ink-muted">{t("gallery.body")}</p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {galleryPhotos.slice(0, 4).map((meta, i) => (
-            <div key={meta.src + i} className="overflow-hidden rounded-xl border border-line bg-surface">
+            <div key={meta.src + i} className="clinical-card group overflow-hidden rounded-[1.25rem]">
               <StockFigure
                 meta={meta}
                 aspectClassName="aspect-square"
-                frameClassName="rounded-none border-0 bg-line"
+                frameClassName="clinical-frame rounded-none border-0 bg-line"
+                imageClassName="transition duration-700 ease-out group-hover:scale-[1.05]"
                 sizes="(max-width: 640px) 50vw, 25vw"
                 showCredit={false}
               />
@@ -366,10 +381,13 @@ async function HomeGallery() {
 }
 
 async function HomeReviews() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Patient signal" : "เสียงตอบรับ";
   return (
-    <section className="mx-auto w-full min-w-0 max-w-6xl px-4 py-16 sm:px-6">
-      <h2 className="text-2xl font-semibold text-ink">{t("reviews.title")}</h2>
+    <section className="mx-auto w-full min-w-0 max-w-6xl px-4 py-18 sm:px-6 sm:py-20">
+      <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+      <h2 className="mt-3 text-3xl font-semibold text-ink">{t("reviews.title")}</h2>
       <p className="mt-2 max-w-2xl text-sm text-ink-muted">{t("reviews.subtitle")}</p>
       <div className="mt-8 min-w-0">
         <ReviewCarousel slides={reviewSlides} />
@@ -379,18 +397,22 @@ async function HomeReviews() {
 }
 
 async function HomeBranches() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Bangkok access" : "สาขาในกรุงเทพฯ";
   return (
-    <section className="border-t border-line bg-surface py-16">
+    <section className="border-t border-line bg-surface/88 py-18 backdrop-blur-xl sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-2xl font-semibold text-ink">{t("branches.title")}</h2>
+        <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+        <h2 className="mt-3 text-3xl font-semibold text-ink">{t("branches.title")}</h2>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
           {branches.map((b) => (
-            <div key={b.id} className="overflow-hidden rounded-2xl border border-line bg-surface">
+            <div key={b.id} className="clinical-card group overflow-hidden rounded-[1.5rem] transition hover:-translate-y-1">
               <StockFigure
                 meta={branchPhotos[b.id]!}
                 aspectClassName="aspect-[4/3]"
-                frameClassName="rounded-none border-0 bg-line"
+                frameClassName="clinical-frame rounded-none border-0 bg-line"
+                imageClassName="transition duration-700 ease-out group-hover:scale-[1.04]"
                 sizes="(max-width: 640px) 100vw, 33vw"
                 showCredit={false}
               />
@@ -427,16 +449,19 @@ async function HomeBranches() {
 }
 
 async function HomeFaqTeaser() {
+  const locale = await getLocale();
   const t = await getTranslations("Home");
+  const label = locale === "en" ? "Before treatment" : "ก่อนเริ่มรักษา";
   return (
-    <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-      <h2 className="text-2xl font-semibold text-ink">{t("faqTeaser.title")}</h2>
+    <section className="mx-auto max-w-3xl px-4 py-18 sm:px-6 sm:py-20">
+      <p className="text-xs font-semibold uppercase text-teal">{label}</p>
+      <h2 className="mt-3 text-3xl font-semibold text-ink">{t("faqTeaser.title")}</h2>
       <dl className="mt-8 space-y-4">
-        <div className="rounded-xl border border-line bg-surface p-5">
+        <div className="clinical-panel rounded-[1.25rem] p-5">
           <dt className="font-semibold text-ink">{t("faqTeaser.q1")}</dt>
           <dd className="mt-2 text-sm text-ink-muted">{t("faqTeaser.a1")}</dd>
         </div>
-        <div className="rounded-xl border border-line bg-surface p-5">
+        <div className="clinical-panel rounded-[1.25rem] p-5">
           <dt className="font-semibold text-ink">{t("faqTeaser.q2")}</dt>
           <dd className="mt-2 text-sm text-ink-muted">{t("faqTeaser.a2")}</dd>
         </div>
@@ -459,7 +484,7 @@ async function HomeTrustStrip() {
           {techPhotos.map((meta, i) => (
             <div
               key={meta.src + i}
-              className="relative size-14 overflow-hidden rounded-xl border border-line opacity-90 sm:size-16"
+              className="clinical-frame relative size-14 overflow-hidden rounded-xl border border-line opacity-90 shadow-sm sm:size-16"
             >
               <Image
                 src={meta.src}

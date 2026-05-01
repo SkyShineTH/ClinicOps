@@ -14,7 +14,7 @@ export function MobileStaffNav() {
   const pathname = usePathname();
   return (
     <nav
-      className="flex gap-2 overflow-x-auto border-b border-staff-line bg-staff-surface px-3 py-3 lg:hidden"
+      className="flex gap-2 overflow-x-auto border-b border-staff-line bg-staff-surface/88 px-3 py-3 backdrop-blur-xl lg:hidden"
       aria-label="เมนูพนักงาน"
     >
       {links.map((l) => {
@@ -23,10 +23,10 @@ export function MobileStaffNav() {
           <Link
             key={l.href}
             href={l.href}
-            className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium transition ${
+            className={`marketing-pressable shrink-0 rounded-full px-4 py-2 text-xs font-medium transition ${
               active
                 ? "bg-staff-accent text-white shadow-sm"
-                : "bg-slate-100 text-staff-muted hover:bg-slate-200"
+                : "bg-white/72 text-staff-muted hover:bg-white"
             }`}
           >
             {l.label}

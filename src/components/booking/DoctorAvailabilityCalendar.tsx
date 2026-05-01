@@ -59,7 +59,7 @@ export function DoctorAvailabilityCalendar() {
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-6">
+    <div className="clinical-panel rounded-[1.75rem] p-5 sm:p-6">
       <h2 className="text-sm font-semibold text-ink">ปฏิทินวันเข้างาน (จำลอง)</h2>
       <p className="mt-1 text-xs leading-relaxed text-ink-muted">
         วันที่สีเขียวคือวันที่ทันตแพทย์ท่านเลือกเข้าตรวจที่สาขานี้ — สอดคล้องกับช่วงเวลาในขั้นตอน &quot;วันเวลา&quot;
@@ -74,7 +74,7 @@ export function DoctorAvailabilityCalendar() {
             id="cal-branch"
             value={branchId}
             onChange={(e) => setBranchId(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-line bg-canvas px-3 py-2 text-sm text-ink"
+            className="mt-1 w-full rounded-2xl border border-line bg-white/78 px-3 py-2 text-sm text-ink transition focus:border-teal"
           >
             {branches.map((b) => (
               <option key={b.id} value={b.id}>
@@ -91,7 +91,7 @@ export function DoctorAvailabilityCalendar() {
             id="cal-provider"
             value={providerId}
             onChange={(e) => setProviderId(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-line bg-canvas px-3 py-2 text-sm text-ink"
+            className="mt-1 w-full rounded-2xl border border-line bg-white/78 px-3 py-2 text-sm text-ink transition focus:border-teal"
           >
             {providers.map((p) => (
               <option key={p.id} value={p.id}>
@@ -106,7 +106,7 @@ export function DoctorAvailabilityCalendar() {
         <button
           type="button"
           onClick={() => shiftMonth(-1)}
-          className="inline-flex size-8 shrink-0 items-center justify-center rounded-xl border border-line text-ink-muted transition hover:border-teal/40 hover:text-teal sm:size-9"
+          className="marketing-pressable inline-flex size-8 shrink-0 items-center justify-center rounded-xl border border-line bg-white/70 text-ink-muted transition hover:border-teal/40 hover:text-teal sm:size-9"
           aria-label="เดือนก่อน"
         >
           <ChevronLeft className="size-4 sm:size-5" />
@@ -117,7 +117,7 @@ export function DoctorAvailabilityCalendar() {
         <button
           type="button"
           onClick={() => shiftMonth(1)}
-          className="inline-flex size-8 shrink-0 items-center justify-center rounded-xl border border-line text-ink-muted transition hover:border-teal/40 hover:text-teal sm:size-9"
+          className="marketing-pressable inline-flex size-8 shrink-0 items-center justify-center rounded-xl border border-line bg-white/70 text-ink-muted transition hover:border-teal/40 hover:text-teal sm:size-9"
           aria-label="เดือนถัดไป"
         >
           <ChevronRight className="size-4 sm:size-5" />
@@ -151,7 +151,7 @@ export function DoctorAvailabilityCalendar() {
                   ? "text-ink-faint/50"
                   : available
                     ? "bg-teal/15 text-teal"
-                    : "bg-canvas text-ink-faint"
+                    : "bg-white/58 text-ink-faint"
               } ${isToday ? "ring-2 ring-teal ring-offset-1 ring-offset-surface" : ""}`}
               title={
                 isPast

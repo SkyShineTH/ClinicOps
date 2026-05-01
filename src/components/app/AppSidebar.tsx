@@ -25,26 +25,26 @@ const links = [
 export function AppSidebar() {
   const pathname = usePathname();
   return (
-    <aside className="hidden w-60 shrink-0 border-r border-staff-line bg-staff-surface lg:block">
-      <div className="flex h-16 items-center border-b border-staff-line px-5">
+    <aside className="relative z-[2] hidden w-64 shrink-0 border-r border-staff-line bg-staff-surface/88 backdrop-blur-xl lg:block">
+      <div className="flex h-18 items-center border-b border-staff-line px-5">
         <Link
           href="/app/reception"
-          className="text-sm font-semibold tracking-tight text-staff-ink transition hover:text-staff-accent"
+          className="text-sm font-semibold text-staff-ink transition hover:text-staff-accent"
         >
           พนักงาน (สาธิต)
         </Link>
       </div>
-      <nav className="space-y-1 p-3" aria-label="แอปพนักงาน">
+      <nav className="space-y-1.5 p-3" aria-label="แอปพนักงาน">
         {links.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
+              className={`marketing-pressable flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition ${
                 active
-                  ? "bg-staff-accent-soft font-medium text-staff-accent"
-                  : "text-staff-muted hover:bg-slate-50 hover:text-staff-ink"
+                  ? "bg-staff-accent-soft font-medium text-staff-accent shadow-[0_18px_38px_-32px_rgba(8,127,122,0.82)]"
+                  : "text-staff-muted hover:bg-white/72 hover:text-staff-ink"
               }`}
             >
               <Icon className="size-[18px] shrink-0 opacity-90" aria-hidden />

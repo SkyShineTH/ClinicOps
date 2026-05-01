@@ -7,7 +7,7 @@ export default function ReceptionPage() {
         <p className="text-xs font-semibold uppercase tracking-wider text-staff-muted">
           แดชบอร์ด
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight text-staff-ink sm:text-3xl">
+        <h1 className="text-2xl font-semibold text-staff-ink sm:text-3xl">
           หน้าร้าน
         </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-staff-muted">

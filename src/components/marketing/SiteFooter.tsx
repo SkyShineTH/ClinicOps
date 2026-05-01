@@ -15,7 +15,7 @@ export async function SiteFooter() {
   ] as const;
 
   return (
-    <footer className="mt-auto border-t border-line bg-surface">
+    <footer className="mt-auto border-t border-line bg-surface/92 backdrop-blur-xl">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         <div>
           <p className="font-semibold text-ink">{brand.nameTh}</p>

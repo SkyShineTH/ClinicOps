@@ -6,7 +6,7 @@ Premium dental clinic marketing site (Bangkok-themed) plus a mock staff app — 
 
 **https://clinic-demo.skyshine.online**
 
-Default locale is Thai; switch to English from the header (English routes use the `/en` prefix when needed).
+Thai routes use the `/th` prefix and English routes use `/en`; switch languages from the header.
 
 ## Requirements
 

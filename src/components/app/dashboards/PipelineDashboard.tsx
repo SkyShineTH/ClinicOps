@@ -50,7 +50,7 @@ export function PipelineDashboard() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-staff-ink">ลีดและผู้ประสานงาน</h1>
+        <h1 className="text-xl font-semibold text-staff-ink">ลีดและผู้ประสานงาน</h1>
         <p className="mt-1 text-sm text-staff-muted">
           ย้ายขั้นตอนการขายได้ · ค้นหาชื่อ แหล่งที่มา หมายเหตุ หรือยอดเงิน
         </p>

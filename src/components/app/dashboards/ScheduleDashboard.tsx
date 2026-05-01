@@ -68,7 +68,7 @@ export function ScheduleDashboard() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-staff-ink">ตารางนัดและเก้าอี้</h1>
+        <h1 className="text-xl font-semibold text-staff-ink">ตารางนัดและเก้าอี้</h1>
         <p className="mt-1 text-sm text-staff-muted">
           มุมมองตามวันที่ (อิงวันที่เครื่อง) · ค้นหาผู้ป่วย แพทย์ ห้อง หรือบริการ
         </p>

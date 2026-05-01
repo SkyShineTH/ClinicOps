@@ -50,7 +50,7 @@ export function MarketingDashboard() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-staff-ink">การตลาดและช่องทาง</h1>
+        <h1 className="text-xl font-semibold text-staff-ink">การตลาดและช่องทาง</h1>
         <p className="mt-1 text-sm text-staff-muted">
           แคมเปญจำลอง — เปลี่ยนสถานะได้ · ค้นหาแบบหลายคำ (ชื่อ ช่องทาง UTM ฯลฯ)
         </p>

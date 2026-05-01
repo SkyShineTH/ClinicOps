@@ -11,11 +11,14 @@ export const metadata: Metadata = {
 export default function StaffAppLayout({ children }: { children: React.ReactNode }) {
   return (
     <DashboardFiltersProvider>
-      <div className="staff-saas flex min-h-screen bg-staff-canvas text-staff-ink antialiased">
+      <div className="staff-saas relative isolate flex min-h-screen overflow-hidden bg-staff-canvas text-staff-ink antialiased">
+        <div className="clinical-futures-field opacity-70" aria-hidden>
+          <div className="clinical-futures-field__raster" />
+        </div>
         <AppSidebar />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 items-center border-b border-staff-line bg-staff-surface px-4 lg:hidden">
-            <span className="text-sm font-semibold tracking-tight text-staff-ink">พนักงาน (สาธิต)</span>
+        <div className="relative z-[1] flex min-w-0 flex-1 flex-col">
+          <header className="flex h-14 items-center border-b border-staff-line bg-staff-surface/88 px-4 backdrop-blur-xl lg:hidden">
+            <span className="text-sm font-semibold text-staff-ink">พนักงาน (สาธิต)</span>
           </header>
           <MobileStaffNav />
           <main className="flex-1 p-5 sm:p-8 lg:p-10">{children}</main>

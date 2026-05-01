@@ -36,7 +36,7 @@ export function DashboardFilterBar() {
             <Filter className="size-[18px]" aria-hidden />
           </span>
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">ตัวกรองทั้งแดชบอร์ด</h2>
+            <h2 className="text-sm font-semibold">ตัวกรองทั้งแดชบอร์ด</h2>
             <p className="mt-0.5 text-xs leading-relaxed text-staff-muted">
               ช่วงวันที่ · สาขา · หมวดบริการ — อัปเดต KPI กราฟ และตารางทันที
             </p>

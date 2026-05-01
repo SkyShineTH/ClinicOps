@@ -191,7 +191,7 @@ export function ReceptionBoard() {
               key={k.label}
               className="rounded-2xl border border-staff-line bg-staff-surface p-6 shadow-sm"
             >
-              <p className="text-3xl font-semibold tracking-tight text-staff-ink">{k.value}</p>
+              <p className="text-3xl font-semibold text-staff-ink">{k.value}</p>
               <p className="mt-2 text-sm text-staff-muted">{k.label}</p>
             </div>
           ))}
@@ -269,7 +269,7 @@ export function ReceptionBoard() {
       <section>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-staff-ink">ตารางนัด</h2>
+            <h2 className="text-lg font-semibold text-staff-ink">ตารางนัด</h2>
             <p className="mt-1 text-sm text-staff-muted">แสดงเฉพาะรายการที่ผ่านตัวกรอง</p>
           </div>
           <button
@@ -327,7 +327,7 @@ export function ReceptionBoard() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold tracking-tight text-staff-ink">คำขอจองจากเว็บ</h2>
+        <h2 className="text-lg font-semibold text-staff-ink">คำขอจองจากเว็บ</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-staff-muted">
           แสดงเฉพาะคำขอที่ตรงช่วงวันที่ · สาขา · หมวดบริการ (นับจากวันนัด) — เก็บในหน่วยความจำเซิร์ฟเวอร์ชั่วคราว
         </p>

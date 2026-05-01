@@ -35,7 +35,7 @@ export function InventoryDashboard() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-staff-ink">คลังและวัสดุ</h1>
+        <h1 className="text-xl font-semibold text-staff-ink">คลังและวัสดุ</h1>
         <p className="mt-1 text-sm text-staff-muted">
           ปรับจำนวนคงเหลือได้ (บันทึกในเบราว์เซอร์) · แจ้งเตือนเมื่อต่ำกว่าเกณฑ์
         </p>

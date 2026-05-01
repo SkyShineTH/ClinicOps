@@ -85,7 +85,7 @@ export function AdminDashboard() {
   return (
     <div className="space-y-10">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-staff-ink">ตั้งค่าและสิทธิ์</h1>
+        <h1 className="text-xl font-semibold text-staff-ink">ตั้งค่าและสิทธิ์</h1>
         <p className="mt-1 text-sm text-staff-muted">
           จัดการสิทธิ์ผู้ใช้จำลอง · บันทึก audit ในเบราว์เซอร์ · ค้นหาผู้ใช้และบันทึกกิจกรรม
         </p>
