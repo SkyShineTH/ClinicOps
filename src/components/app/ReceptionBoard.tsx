@@ -329,7 +329,7 @@ export function ReceptionBoard() {
       <section>
         <h2 className="text-lg font-semibold text-staff-ink">คำขอจองจากเว็บ</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-staff-muted">
-          แสดงเฉพาะคำขอที่ตรงช่วงวันที่ · สาขา · หมวดบริการ (นับจากวันนัด) — เก็บในหน่วยความจำเซิร์ฟเวอร์ชั่วคราว
+          แสดงเฉพาะคำขอที่ตรงช่วงวันที่ · สาขา · หมวดบริการ (นับจากวันนัด) — ข้อมูลจาก demo backend
         </p>
         <div className="mt-6 space-y-4">
           {requests === null && <p className="text-sm text-staff-muted">กำลังโหลด…</p>}
