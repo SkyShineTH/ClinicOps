@@ -39,3 +39,23 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Docker image build
+        run: docker build --tag clinicops:${{ github.sha }} .
+
+      - name: Docker health smoke test
+        run: |
+          docker run --detach --name clinicops-ci --publish 3000:3000 clinicops:${{ github.sha }}
+          trap 'docker rm --force clinicops-ci >/dev/null 2>&1 || true' EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:3000/api/health > /tmp/clinicops-health.json; then
+              cat /tmp/clinicops-health.json
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Health endpoint did not respond in time"
+          docker logs clinicops-ci
+          exit 1
