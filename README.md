@@ -123,7 +123,9 @@ npm run db:migrate
 npm run smoke:staff   # run against an already-running app, defaults to http://localhost:3000
 ```
 
-`npm run db:migrate` expects `DATABASE_URL` to be set in the shell. `docker compose up --build` starts PostgreSQL on host port `5433`, initializes `database/migrations/*.sql`, and runs the app with `DATABASE_URL` pointed at the compose database. The compose password is for local development only; override `POSTGRES_PASSWORD` and `DATABASE_URL` in real environments.
+`npm run db:migrate` expects `DATABASE_URL` to be set in the shell. It records applied files in the `schema_migrations` table with a SHA-256 checksum and skips migrations that already match. If an applied migration file changes later, the command fails and expects a new migration file instead.
+
+`docker compose up --build` starts PostgreSQL on host port `5433`, initializes `database/migrations/*.sql` on first database volume creation, and runs the app with `DATABASE_URL` pointed at the compose database. For an existing database, use `npm run db:migrate` to apply new migration files. The compose password is for local development only; override `POSTGRES_PASSWORD` and `DATABASE_URL` in real environments.
 
 Staff demo modules use PostgreSQL-backed persistence when `DATABASE_URL` is configured and fall back to server memory otherwise. Mutating staff endpoints can be optionally guarded by setting `STAFF_API_TOKEN`; clients then need to send the same value in the `x-staff-demo-token` header. The built-in staff UI assumes no token for local demo use.
 
