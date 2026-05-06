@@ -43,7 +43,7 @@ jobs:
       - name: Docker image build
         run: docker build --tag clinicops:${{ github.sha }} .
 
-      - name: Docker Compose database smoke test
+      - name: Docker Compose full-stack smoke test
         run: |
           trap 'docker compose down --volumes --remove-orphans' EXIT
           docker compose up --detach --build --wait
@@ -51,6 +51,7 @@ jobs:
           for attempt in {1..30}; do
             if curl --fail --silent http://localhost:3000/api/ready > /tmp/clinicops-ready.json; then
               cat /tmp/clinicops-ready.json
+              npm run smoke:staff
               exit 0
             fi
             sleep 2

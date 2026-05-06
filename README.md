@@ -1,5 +1,7 @@
 # ClinicOps (`clinic-demo`)
 
+[![CI](https://github.com/SkyShineTH/Clinic-Demo/actions/workflows/ci.yml/badge.svg)](https://github.com/SkyShineTH/Clinic-Demo/actions/workflows/ci.yml)
+
 Production-style DevOps portfolio project built from a premium dental clinic marketing site (Bangkok-themed) plus a mock staff app — **not a real clinic**. No real patient data (PHI).
 
 ## Live demo
@@ -26,7 +28,6 @@ Other commands:
 ```bash
 npm run lint    # ESLint
 npm run build   # production build (includes typecheck via Next)
-npm run start   # run the production build locally
 ```
 
 ## DevOps / Production Readiness
@@ -47,7 +48,6 @@ Build, lint, and production start:
 ```bash
 npm run lint
 npm run build
-npm run start
 ```
 
 Docker build:
@@ -67,6 +67,8 @@ Docker Compose with PostgreSQL:
 ```bash
 docker compose up --build
 ```
+
+This is the preferred local production-style run path because the Docker image uses Next.js standalone output and starts with `node server.js`.
 
 Health and readiness checks:
 
@@ -127,7 +129,20 @@ Staff demo modules use PostgreSQL-backed persistence when `DATABASE_URL` is conf
 
 If port `3000` is already busy, set `APP_PORT` before running compose, for example `APP_PORT=3100 docker compose up --build`.
 
-CI now verifies lint, a production Next.js build, a Docker image build, and a Docker Compose smoke test against `/api/ready`.
+CI now verifies lint, a production Next.js build, a Docker image build, and a Docker Compose full-stack smoke test against `/api/ready` plus the staff demo mutation flow.
+
+CI quality gates:
+
+```text
+npm ci
+npm run lint
+npm run build
+docker build
+docker compose up --detach --build --wait
+GET /api/ready
+npm run smoke:staff
+docker compose down --volumes --remove-orphans
+```
 
 ## Features
 
