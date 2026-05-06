@@ -14,6 +14,7 @@ export async function GET() {
   return NextResponse.json(
     {
       status: ready ? "ready" : "not_ready",
+      app: packageJson.name,
       service: "ClinicOps",
       timestamp: new Date().toISOString(),
       version: packageJson.version,

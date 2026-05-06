@@ -5,9 +5,22 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    groups:
+      nextjs-runtime:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+          - "eslint-config-next"
+      dev-tooling:
+        dependency-type: development
     open-pull-requests-limit: 10
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

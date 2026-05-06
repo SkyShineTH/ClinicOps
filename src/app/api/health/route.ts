@@ -10,6 +10,7 @@ export function GET() {
   return NextResponse.json(
     {
       status: "ok",
+      app: packageJson.name,
       service: "ClinicOps",
       timestamp: new Date().toISOString(),
       version: packageJson.version,
