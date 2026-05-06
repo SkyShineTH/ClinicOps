@@ -64,7 +64,8 @@ docker run --rm -p 3000:3000 clinicops:milestone-2
 
 Docker Compose with PostgreSQL:
 
-```bash
+```powershell
+$env:STAFF_API_TOKEN = "local-staff-token"
 docker compose up --build
 ```
 
@@ -127,7 +128,7 @@ npm run smoke:staff   # run against an already-running app, defaults to http://l
 
 `docker compose up --build` starts PostgreSQL on host port `5433`, initializes `database/migrations/*.sql` on first database volume creation, and runs the app with `DATABASE_URL` pointed at the compose database. For an existing database, use `npm run db:migrate` to apply new migration files. The compose password is for local development only; override `POSTGRES_PASSWORD` and `DATABASE_URL` in real environments.
 
-Staff demo modules use PostgreSQL-backed persistence when `DATABASE_URL` is configured and fall back to server memory otherwise. Mutating staff endpoints can be optionally guarded by setting `STAFF_API_TOKEN`; clients then need to send the same value in the `x-staff-demo-token` header. The built-in staff UI assumes no token for local demo use.
+Staff demo modules use PostgreSQL-backed persistence when `DATABASE_URL` is configured and fall back to server memory otherwise. Mutating staff endpoints are open in local development unless `STAFF_API_TOKEN` is set. In `NODE_ENV=production`, staff mutations fail closed unless `STAFF_API_TOKEN` is configured; clients then need to send the same value in the `x-staff-demo-token` header. The built-in staff UI assumes no token for local `npm run dev` demo use.
 
 If port `3000` is already busy, set `APP_PORT` before running compose, for example `APP_PORT=3100 docker compose up --build`.
 

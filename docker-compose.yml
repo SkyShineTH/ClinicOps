@@ -13,6 +13,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgres://clinicops:clinicops_dev_password@db:5432/clinicops}
       NEXT_TELEMETRY_DISABLED: "1"
       NODE_ENV: production
+      STAFF_API_TOKEN: ${STAFF_API_TOKEN:-}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/ready || exit 1"]
       interval: 30s

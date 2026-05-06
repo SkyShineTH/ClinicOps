@@ -60,3 +60,5 @@ jobs:
           echo "Readiness endpoint did not respond in time"
           docker compose logs
           exit 1
+        env:
+          STAFF_API_TOKEN: ci-staff-smoke-token
