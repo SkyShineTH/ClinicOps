@@ -78,6 +78,17 @@ http://localhost:3000/api/health
 http://localhost:3000/api/ready
 ```
 
+API observability:
+
+- API requests receive an `x-request-id` response header. If the caller sends `x-request-id`, the app preserves it; otherwise it generates one.
+- API traffic writes structured JSON logs that can be searched in Docker, Vercel, or external log drains.
+
+Example log:
+
+```json
+{"event":"api_request","method":"GET","path":"/api/ready","requestId":"...","timestamp":"2026-05-06T00:00:00.000Z"}
+```
+
 Demo backend endpoints:
 
 ```text
