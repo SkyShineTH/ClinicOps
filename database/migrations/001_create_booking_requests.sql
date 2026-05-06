@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS booking_requests (
   note text,
   status text NOT NULL DEFAULT 'pending' CHECK (
     status IN ('pending', 'confirmed', 'reschedule', 'rejected')
-  )
+  ),
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS booking_requests_created_at_idx

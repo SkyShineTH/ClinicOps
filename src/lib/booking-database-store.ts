@@ -66,6 +66,31 @@ export async function listBookingRequestsFromDatabase() {
   return rows.map(mapBookingRequest);
 }
 
+export async function getBookingRequestFromDatabase(id: string) {
+  const sql = getRequiredSql();
+  const rows = await sql<BookingRequestRow[]>`
+    SELECT
+      id,
+      created_at,
+      branch_id,
+      branch_name,
+      service_id,
+      service_name,
+      provider_preference,
+      slot_start,
+      patient_name,
+      phone,
+      email,
+      note,
+      status
+    FROM booking_requests
+    WHERE id = ${id}
+    LIMIT 1
+  `;
+
+  return rows[0] ? mapBookingRequest(rows[0]) : null;
+}
+
 export async function addBookingRequestToDatabase(entry: BookingRequestInput) {
   const sql = getRequiredSql();
   const rows = await sql<BookingRequestRow[]>`
@@ -120,7 +145,7 @@ export async function updateBookingRequestStatusInDatabase(
   const sql = getRequiredSql();
   const rows = await sql<BookingRequestRow[]>`
     UPDATE booking_requests
-    SET status = ${status}
+    SET status = ${status}, updated_at = now()
     WHERE id = ${id}
     RETURNING
       id,
@@ -139,4 +164,15 @@ export async function updateBookingRequestStatusInDatabase(
   `;
 
   return rows[0] ? mapBookingRequest(rows[0]) : null;
+}
+
+export async function deleteBookingRequestFromDatabase(id: string) {
+  const sql = getRequiredSql();
+  const rows = await sql<{ id: string }[]>`
+    DELETE FROM booking_requests
+    WHERE id = ${id}
+    RETURNING id
+  `;
+
+  return rows.length > 0;
 }

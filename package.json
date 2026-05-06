@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:migrate": "node scripts/db-migrate.mjs"
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "smoke:staff": "node scripts/staff-smoke.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.7.0",

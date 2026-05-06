@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Appointment, AppointmentStatus, BookingRequest } from "@/lib/types";
 import {
   eachYmdInRange,
-  hydrateDemoAppointments,
   parseRequestSlotDate,
+  toYmdLocal,
 } from "@/lib/dashboard-demo-data";
 import { branches } from "@/lib/mock-data";
 import { DashboardFilterBar } from "./DashboardFilterBar";
@@ -51,22 +51,40 @@ function branchName(id: string) {
 
 export function ReceptionBoard() {
   const { filters, dateRange } = useDashboardFilters();
-  const [baseAppointments] = useState<Appointment[]>(() => hydrateDemoAppointments(new Date()));
-
+  const [appointments, setAppointments] = useState<Appointment[] | null>(null);
   const [requests, setRequests] = useState<BookingRequest[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionId, setActionId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoadError(null);
+
+    const params = new URLSearchParams({
+      start: toYmdLocal(dateRange.start),
+      end: toYmdLocal(dateRange.end),
+    });
+
+    if (filters.region !== "all") params.set("branchId", filters.region);
+    if (filters.category !== "all") {
+      params.set("serviceId", filters.category);
+      params.set("categoryId", filters.category);
+    }
+
     try {
-      const res = await fetch("/api/booking-requests", { cache: "no-store" });
-      const data = (await res.json()) as { items?: BookingRequest[] };
-      setRequests(data.items ?? []);
+      const [requestsRes, appointmentsRes] = await Promise.all([
+        fetch(`/api/booking-requests?${params}`, { cache: "no-store" }),
+        fetch(`/api/appointments?${params}`, { cache: "no-store" }),
+      ]);
+      const requestsData = (await requestsRes.json()) as { items?: BookingRequest[] };
+      const appointmentsData = (await appointmentsRes.json()) as { items?: Appointment[] };
+
+      if (!requestsRes.ok || !appointmentsRes.ok) throw new Error("fail");
+      setRequests(requestsData.items ?? []);
+      setAppointments(appointmentsData.items ?? []);
     } catch {
       setLoadError("โหลดข้อมูลไม่สำเร็จ ลองอีกครั้ง");
     }
-  }, []);
+  }, [dateRange.end, dateRange.start, filters.category, filters.region]);
 
   useEffect(() => {
     void load();
@@ -75,10 +93,10 @@ export function ReceptionBoard() {
   async function patchStatus(id: string, status: BookingRequest["status"]) {
     setActionId(id);
     try {
-      const res = await fetch("/api/booking-requests", {
+      const res = await fetch(`/api/booking-requests/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status }),
+        body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error("fail");
       await load();
@@ -89,14 +107,27 @@ export function ReceptionBoard() {
     }
   }
 
+  async function deleteRequest(id: string) {
+    setActionId(id);
+    try {
+      const res = await fetch(`/api/booking-requests/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("fail");
+      setRequests((prev) => prev?.filter((request) => request.id !== id) ?? null);
+    } catch {
+      setLoadError("ลบคำขอไม่สำเร็จ");
+    } finally {
+      setActionId(null);
+    }
+  }
+
   const filteredAppointments = useMemo(() => {
-    return baseAppointments.filter((a) => {
+    return (appointments ?? []).filter((a) => {
       if (!ymdInRange(a.slotDate, dateRange.start, dateRange.end)) return false;
       if (filters.region !== "all" && a.branchId !== filters.region) return false;
       if (filters.category !== "all" && a.categoryId !== filters.category) return false;
       return true;
     });
-  }, [baseAppointments, dateRange.end, dateRange.start, filters.category, filters.region]);
+  }, [appointments, dateRange.end, dateRange.start, filters.category, filters.region]);
 
   const filteredRequests = useMemo(() => {
     if (!requests) return null;
@@ -332,7 +363,9 @@ export function ReceptionBoard() {
           แสดงเฉพาะคำขอที่ตรงช่วงวันที่ · สาขา · หมวดบริการ (นับจากวันนัด) — ข้อมูลจาก demo backend
         </p>
         <div className="mt-6 space-y-4">
-          {requests === null && <p className="text-sm text-staff-muted">กำลังโหลด…</p>}
+          {(requests === null || appointments === null) && (
+            <p className="text-sm text-staff-muted">กำลังโหลด…</p>
+          )}
           {filteredRequests?.length === 0 && (
             <p className="rounded-2xl border border-dashed border-staff-line bg-staff-surface px-6 py-12 text-center text-sm text-staff-muted">
               ไม่มีคำขอในช่วงหรือเงื่อนไขที่เลือก
@@ -379,6 +412,14 @@ export function ReceptionBoard() {
                   className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-medium text-red-800 transition hover:bg-red-100 disabled:opacity-40"
                 >
                   ปฏิเสธ
+                </button>
+                <button
+                  type="button"
+                  disabled={actionId === r.id}
+                  onClick={() => void deleteRequest(r.id)}
+                  className="rounded-xl border border-red-200 bg-white px-4 py-2 text-xs font-medium text-red-800 transition hover:bg-red-50 disabled:opacity-40"
+                >
+                  ลบ
                 </button>
               </div>
             </div>

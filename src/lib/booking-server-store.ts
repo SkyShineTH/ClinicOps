@@ -65,6 +65,10 @@ export function listBookingRequests(): BookingRequest[] {
   );
 }
 
+export function getBookingRequest(id: string): BookingRequest | null {
+  return getStore().find((r) => r.id === id) ?? null;
+}
+
 export function addBookingRequest(entry: Omit<BookingRequest, "id" | "createdAt" | "status">) {
   const row: BookingRequest = {
     ...entry,
@@ -85,4 +89,12 @@ export function updateBookingRequestStatus(
   if (idx === -1) return null;
   store[idx] = { ...store[idx], status };
   return store[idx];
+}
+
+export function deleteBookingRequest(id: string): boolean {
+  const store = getStore();
+  const idx = store.findIndex((r) => r.id === id);
+  if (idx === -1) return false;
+  store.splice(idx, 1);
+  return true;
 }

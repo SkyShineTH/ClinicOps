@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { buildSlotPresets } from "@/lib/provider-availability";
 import { branches, providers, services } from "@/lib/mock-data";
 import { PrivacyPolicyModalTrigger } from "@/components/marketing/PrivacyPolicyModal";
 
@@ -24,11 +23,37 @@ export function BookingWizard() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [doneRef, setDoneRef] = useState<string | null>(null);
-
-  const slots = useMemo(() => buildSlotPresets(branchId, providerId), [branchId, providerId]);
+  const [slots, setSlots] = useState<{ label: string; iso: string }[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(true);
 
   useEffect(() => {
     setSlotIso(null);
+    setSlotsLoading(true);
+
+    const controller = new AbortController();
+    const params = new URLSearchParams({ branchId, providerId });
+
+    async function loadSlots() {
+      try {
+        const res = await fetch(`/api/availability/slots?${params}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const data = (await res.json()) as { items?: { label: string; iso: string }[] };
+        if (!res.ok) throw new Error("failed");
+        setSlots(data.items ?? []);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setSlots([]);
+        setError("โหลดช่วงเวลานัดหมายไม่สำเร็จ กรุณาลองใหม่");
+      } finally {
+        setSlotsLoading(false);
+      }
+    }
+
+    void loadSlots();
+
+    return () => controller.abort();
   }, [branchId, providerId]);
 
   const branch = branches.find((b) => b.id === branchId)!;
@@ -244,6 +269,7 @@ export function BookingWizard() {
             <p className="text-sm text-ink-muted">
               แสดงเฉพาะวันที่ทันตแพทย์และสาขาที่เลือกเข้างาน — โหมดสาธิต
             </p>
+            {slotsLoading && <p className="text-sm text-ink-muted">กำลังโหลดช่วงเวลา…</p>}
             <div className="grid max-h-80 grid-cols-1 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
               {slots.map((s) => (
                 <button

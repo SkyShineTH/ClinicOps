@@ -1,6 +1,7 @@
 import packageJson from "../../../../package.json";
 import { checkDatabase } from "@/lib/database";
 import { getBookingStorageMode } from "@/lib/booking-request-store";
+import { getStaffStorageMode } from "@/lib/staff-demo-store";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,8 @@ export async function GET() {
       version: packageJson.version,
       storage: {
         mode: getBookingStorageMode(),
+        booking: getBookingStorageMode(),
+        staff: getStaffStorageMode(),
       },
       checks: {
         database,

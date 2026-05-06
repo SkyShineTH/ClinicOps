@@ -1,13 +1,10 @@
 "use client";
 
-import { Minus, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useLocalStorageJson } from "@/components/app/hooks/useLocalStorageJson";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { StaffSearchField } from "@/components/app/staff/StaffSearchField";
-import { type InventoryItem, inventorySeed } from "@/lib/staff-seed-data";
+import { type InventoryItem } from "@/lib/staff-seed-data";
 import { filterAndSortBySearch } from "@/lib/text-search";
-
-const LS_KEY = "clinic-demo-inventory-v1";
 
 function inventorySearchText(r: InventoryItem) {
   return [r.sku, r.nameTh, r.nameEn, r.category, r.supplier, r.location, String(r.qty), String(r.par)].join(
@@ -16,8 +13,32 @@ function inventorySearchText(r: InventoryItem) {
 }
 
 export function InventoryDashboard() {
-  const [items, setItems] = useLocalStorageJson<InventoryItem[]>(LS_KEY, inventorySeed);
+  const [items, setItems] = useState<InventoryItem[]>([]);
   const [q, setQ] = useState("");
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [draft, setDraft] = useState({
+    sku: "",
+    nameTh: "",
+    qty: "0",
+    par: "10",
+    category: "ทั่วไป",
+  });
+
+  async function load() {
+    setLoadError(null);
+    try {
+      const res = await fetch("/api/staff/inventory", { cache: "no-store" });
+      const data = (await res.json()) as { items?: InventoryItem[] };
+      if (!res.ok) throw new Error("fail");
+      setItems(data.items ?? []);
+    } catch {
+      setLoadError("โหลดคลังไม่สำเร็จ");
+    }
+  }
+
+  useEffect(() => {
+    void load();
+  }, []);
 
   const filtered = useMemo(
     () => filterAndSortBySearch(items, q, inventorySearchText),
@@ -26,10 +47,57 @@ export function InventoryDashboard() {
 
   const lowStock = useMemo(() => items.filter((r) => r.qty < r.par), [items]);
 
-  function adjustQty(id: string, delta: number) {
-    setItems((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, qty: Math.max(0, r.qty + delta) } : r)),
-    );
+  async function adjustQty(id: string, delta: number) {
+    try {
+      const res = await fetch(`/api/staff/inventory/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ delta }),
+      });
+      const data = (await res.json()) as { item?: InventoryItem };
+      if (!res.ok || !data.item) throw new Error("fail");
+      setItems((prev) => prev.map((item) => (item.id === id ? data.item! : item)));
+    } catch {
+      setLoadError("ปรับจำนวนไม่สำเร็จ");
+    }
+  }
+
+  async function createItem() {
+    if (!draft.sku.trim() || !draft.nameTh.trim()) {
+      setLoadError("กรอก SKU และชื่อวัสดุก่อนเพิ่มรายการ");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/staff/inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...draft,
+          qty: Number(draft.qty),
+          par: Number(draft.par),
+          nameEn: draft.nameTh,
+          supplier: "Demo supplier",
+          location: "คลังใหม่",
+        }),
+      });
+      const data = (await res.json()) as { item?: InventoryItem };
+      if (!res.ok || !data.item) throw new Error("fail");
+      setItems((prev) => [data.item!, ...prev]);
+      setDraft({ sku: "", nameTh: "", qty: "0", par: "10", category: "ทั่วไป" });
+    } catch {
+      setLoadError("เพิ่มวัสดุไม่สำเร็จ");
+    }
+  }
+
+  async function deleteItem(id: string) {
+    try {
+      const res = await fetch(`/api/staff/inventory/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("fail");
+      setItems((prev) => prev.filter((item) => item.id !== id));
+    } catch {
+      setLoadError("ลบวัสดุไม่สำเร็จ");
+    }
   }
 
   return (
@@ -37,9 +105,57 @@ export function InventoryDashboard() {
       <header>
         <h1 className="text-xl font-semibold text-staff-ink">คลังและวัสดุ</h1>
         <p className="mt-1 text-sm text-staff-muted">
-          ปรับจำนวนคงเหลือได้ (บันทึกในเบราว์เซอร์) · แจ้งเตือนเมื่อต่ำกว่าเกณฑ์
+          ปรับจำนวนคงเหลือผ่าน demo backend · แจ้งเตือนเมื่อต่ำกว่าเกณฑ์
         </p>
       </header>
+
+      {loadError && (
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+          {loadError}
+        </p>
+      )}
+
+      <section className="grid gap-3 rounded-2xl border border-staff-line bg-staff-surface p-4 shadow-sm md:grid-cols-[1fr_1.4fr_0.7fr_0.7fr_1fr_auto]">
+        <input
+          value={draft.sku}
+          onChange={(e) => setDraft((prev) => ({ ...prev, sku: e.target.value }))}
+          placeholder="SKU"
+          className="rounded-xl border border-staff-line bg-canvas px-3 py-2 text-sm"
+        />
+        <input
+          value={draft.nameTh}
+          onChange={(e) => setDraft((prev) => ({ ...prev, nameTh: e.target.value }))}
+          placeholder="ชื่อวัสดุ"
+          className="rounded-xl border border-staff-line bg-canvas px-3 py-2 text-sm"
+        />
+        <input
+          value={draft.qty}
+          onChange={(e) => setDraft((prev) => ({ ...prev, qty: e.target.value }))}
+          placeholder="คงเหลือ"
+          inputMode="numeric"
+          className="rounded-xl border border-staff-line bg-canvas px-3 py-2 text-sm"
+        />
+        <input
+          value={draft.par}
+          onChange={(e) => setDraft((prev) => ({ ...prev, par: e.target.value }))}
+          placeholder="เกณฑ์"
+          inputMode="numeric"
+          className="rounded-xl border border-staff-line bg-canvas px-3 py-2 text-sm"
+        />
+        <input
+          value={draft.category}
+          onChange={(e) => setDraft((prev) => ({ ...prev, category: e.target.value }))}
+          placeholder="หมวด"
+          className="rounded-xl border border-staff-line bg-canvas px-3 py-2 text-sm"
+        />
+        <button
+          type="button"
+          onClick={() => void createItem()}
+          className="rounded-xl bg-staff-accent px-4 py-2 text-sm font-semibold text-white"
+        >
+          เพิ่ม
+        </button>
+      </section>
 
       <StaffSearchField
         id="inventory-search"
@@ -67,6 +183,7 @@ export function InventoryDashboard() {
                 <th className="px-4 py-3">เกณฑ์</th>
                 <th className="px-4 py-3">ที่เก็บ</th>
                 <th className="px-4 py-3">ซัพพลายเออร์</th>
+                <th className="px-4 py-3">ลบ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-staff-line">
@@ -86,7 +203,7 @@ export function InventoryDashboard() {
                         type="button"
                         aria-label="ลดจำนวน"
                         className="inline-flex size-8 items-center justify-center rounded-lg border border-staff-line text-staff-muted hover:border-staff-accent hover:text-staff-accent"
-                        onClick={() => adjustQty(r.id, -1)}
+                        onClick={() => void adjustQty(r.id, -1)}
                       >
                         <Minus className="size-4" />
                       </button>
@@ -97,7 +214,7 @@ export function InventoryDashboard() {
                         type="button"
                         aria-label="เพิ่มจำนวน"
                         className="inline-flex size-8 items-center justify-center rounded-lg border border-staff-line text-staff-muted hover:border-staff-accent hover:text-staff-accent"
-                        onClick={() => adjustQty(r.id, 1)}
+                        onClick={() => void adjustQty(r.id, 1)}
                       >
                         <Plus className="size-4" />
                       </button>
@@ -106,6 +223,16 @@ export function InventoryDashboard() {
                   <td className="px-4 py-3 tabular-nums text-staff-muted">{r.par}</td>
                   <td className="px-4 py-3 text-staff-muted">{r.location}</td>
                   <td className="px-4 py-3 text-staff-muted">{r.supplier}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      onClick={() => void deleteItem(r.id)}
+                      className="inline-flex size-8 items-center justify-center rounded-lg border border-red-200 text-red-700 hover:bg-red-50"
+                      aria-label={`ลบ ${r.nameTh}`}
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

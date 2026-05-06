@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -44,7 +45,13 @@ function addDays(d: Date, n: number) {
 }
 
 export function computeDateRange(filters: DashboardFiltersState): { start: Date; end: Date } {
-  const now = new Date();
+  return computeDateRangeFrom(filters, new Date());
+}
+
+export function computeDateRangeFrom(
+  filters: DashboardFiltersState,
+  now: Date,
+): { start: Date; end: Date } {
   if (
     filters.datePreset === "custom" &&
     filters.customFrom.trim() &&
@@ -94,8 +101,17 @@ const DashboardFiltersContext = createContext<DashboardFiltersContextValue | nul
 
 export function DashboardFiltersProvider({ children }: { children: ReactNode }) {
   const [filters, setFilters] = useState<DashboardFiltersState>(defaultFilters);
+  const [rangeNow, setRangeNow] = useState<Date | null>(null);
 
-  const dateRange = useMemo(() => computeDateRange(filters), [filters]);
+  useEffect(() => {
+    const id = window.setTimeout(() => setRangeNow(new Date()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const dateRange = useMemo(
+    () => computeDateRangeFrom(filters, rangeNow ?? new Date("2026-01-01T00:00:00.000Z")),
+    [filters, rangeNow],
+  );
 
   const setDatePreset = useCallback((v: DateRangePreset) => {
     setFilters((f) => ({ ...f, datePreset: v }));
